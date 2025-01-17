@@ -13,13 +13,19 @@ def write_result(result_file,result):
 
 datasets = ['ACP','AHP','AIP','APP','AVP','ICP','AFP','AMP']
 seeds = [123,456,789,101112,131415,161718,192021,222324,252627,282930]
-lr = 0.006
-min_layernumber = 23
-alpha = 0.5
 torch.cuda.set_device(6)
+lr = 0.006
+all_layernumber = 33 #Number of pre-trained model layers
+finetune_layernumber = 10 #Number of pre-trained model layers
+min_layernumber = all_layernumber - finetune_layernumber
+alpha = 0.5 #Hyperparameters used to balance CE loss and KMeans triplet loss
 device = torch.device("cuda:6" if torch.cuda.is_available() else "cpu")
-model_dir = '../model/'
-result_file = '../result.csv'
+model_dir = '../model/' #The model parameters saved folder
+result_file = '../result.csv'    #Result output path
+esm_model_dir='../protst_esm2_protein.pt'  #The parameters of ProTST-ESM2 pretrained model parameters
+batch_size=20
+epoch_num=50
+weight_decay=0.0001
 if not os.path.exists(model_dir):
     os.mkdir(model_dir)
 for dataset in datasets:
