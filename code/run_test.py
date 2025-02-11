@@ -3,6 +3,7 @@ from test import test
 import torch
 import pandas as pd
 import numpy as np
+import argparse
 
 def check_fasta_file(file_path):
     if not os.path.isfile(file_path):
@@ -12,7 +13,7 @@ def check_fasta_file(file_path):
     if not file_path.endswith(('.fasta', '.fa')):
         raise Exception(f"'{file_path}'is not a fasta file")
 
-def check_for_unstandard_amino_acids(sequence):
+def check_for_unstandard_amino_acid(sequence):
     standard_amino_acids = set('ACDEFGHIKLMNPQRSTVWY')
     for amino_acid in sequence:
         if amino_acid not in standard_amino_acids:
@@ -41,8 +42,8 @@ def read_data(pos_file,neg_file):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--positive_samples', type=str, required=True, help="The fasta file of therapeutic peptide samples")
-parser.add_argument('--negative_samples', type=str, required=True, help="The fasta file of non-therapeutic peptide samples")
+parser.add_argument('--positive_file', type=str, required=True, help="The fasta file of therapeutic peptide samples")
+parser.add_argument('--negative_file', type=str, required=True, help="The fasta file of non-therapeutic peptide samples")
 parser.add_argument('--device', type=str, default='cpu', help="Please enter the device code, the default is cpu, enter for example \'cuda:0\'")
 parser.add_argument('--pre_trained_model_dir',type=str,default='../protst_esm2_protein.pt',help="Pre-trained model locations to be fine-tuned")
 parser.add_argument('--finetune_layernumber',type=int,default=10,help="Number of pre-trained model layers")
@@ -52,7 +53,8 @@ parser.add_argument('--batch_size',type=int,default=20,help="Batch size")
 
 
 args = parser.parse_args()
-samples_file = args.samples
+positive_file = args.positive_file
+negative_file = args.negative_file
 device = args.device
 if device.isdigit():
     device = 'cuda:'+device
@@ -61,12 +63,16 @@ model_file = args.model_file
 result_file = args.result_file
 batch_size = args.batch_size
 finetune_layernumber = args.finetune_layernumber
+all_layernumber = 33 #Number of pre-trained model layers
+if finetune_layernumber > 33:
+    raise Exception("The number of layers to be fine-tuned cannot be greater than 33")
+min_layernumber = all_layernumber - finetune_layernumber
 device = torch.device(device if torch.cuda.is_available() else "cpu")
 
-test_data = train_data,test_data = read_data(positive_file,negative_file)
-result = test(test_data,model_file=model_file,device=device,pre_trained_model_dir=pre_trained_model_dir,batch_size=batch_size,min_layernumber=min_layernumber)
+test_data = read_data(positive_file,negative_file)
+result = test(test_data,model_file=model_file,device=device,pre_trained_model_dir=pre_trained_model_dir,batch_size=batch_size,min_layernumber=finetune_layernumber)
 data_column = ['accuracy','auc','f1','tn','fp','fn','tp']
-data_record = pd.DataFrame([data_result],columns=data_column)
+data_record = pd.DataFrame([result],columns=data_column)
 if os.path.exists(result_file):
     data_record_ori = pd.read_csv(result_file)
     data_record = pd.concat([data_record_ori,data_record],ignore_index=True)
