@@ -14,7 +14,7 @@ def check_fasta_file(file_path):
     if not file_path.endswith(('.fasta', '.fa')):
         raise Exception(f"'{file_path}'is not a fasta file")
 
-def check_for_unstandard_amino_acids(sequence):
+def check_for_unstandard_amino_acid(sequence):
     standard_amino_acids = set('ACDEFGHIKLMNPQRSTVWY')
     for amino_acid in sequence:
         if amino_acid not in standard_amino_acids:
@@ -25,7 +25,7 @@ def read_data(input_file):
     File = open(input_file,'r')
     Sequences = []
     input_data = []
-    for line in P_File.readlines():
+    for line in File.readlines():
         if not line.startswith('>'):
             sequence = line.rstrip()
             if check_for_unstandard_amino_acid(sequence):
@@ -39,7 +39,7 @@ parser.add_argument('--samples', type=str, required=True, help="The fasta file o
 parser.add_argument('--device', type=str, default='cpu', help="Please enter the device code, the default is cpu, enter for example \'cuda:0\'")
 parser.add_argument('--pre_trained_model_dir',type=str,default='../protst_esm2_protein.pt',help="Pre-trained model locations to be fine-tuned")
 parser.add_argument('--model_file',type=str,default='../model/',help='Where the model parameters are saved')
-parser.add_argument('--result_file',type=str,default='../test_result.csv',help="The path of result file, please end with '.csv'")
+parser.add_argument('--result_file',type=str,default='../predict_result.csv',help="The path of result file, please end with '.csv'")
 parser.add_argument('--batch_size',type=int,default=20,help="Batch size")
 parser.add_argument('--finetune_layernumber',type=int,default=10,help="Number of pre-trained model layers")
 
@@ -54,11 +54,15 @@ model_file = args.model_file
 result_file = args.result_file
 batch_size = args.batch_size
 finetune_layernumber = args.finetune_layernumber
+all_layernumber = 33 #Number of pre-trained model layers
+if finetune_layernumber > 33:
+    raise Exception("The number of layers to be fine-tuned cannot be greater than 33")
+min_layernumber = all_layernumber - finetune_layernumber
 device = torch.device(device if torch.cuda.is_available() else "cpu")
 
 Sequences,input_data = read_data(samples_file)
 flags,scores = predict(input_data,model_file=model_file,device=device,pre_trained_model_dir=pre_trained_model_dir,batch_size=batch_size,min_layernumber=min_layernumber)
-data_result = {'sequence':sequences,'flag':flags,'score':scores}
+data_result = {'sequence':Sequences,'flag':flags,'score':scores}
 data_record = pd.DataFrame(data_result)
 if os.path.exists(result_file):
     data_record_ori = pd.read_csv(result_file)
