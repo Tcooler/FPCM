@@ -38,25 +38,25 @@ pip install scikit-learn
 
 Train the model and save the best parameters. The best result obtained on the validation set during the training process will be output in the result.csv file.
 
-/```
+```bash
 python run_train.py --positive_file='../dataset/ACP/positive.fasta' --negative_file='../dataset/ACP/negative.fasta' --pre_trained_model_dir='../protst_esm2_protein.pt' --device='cuda:1'
-/```
+```
 
 ### Testing
 
 Load the fine-tuned model parameters and test on the input test set. The results will be saved in the test_result.csv file.
 
-/```
+```bash
 python run_test.py --positive_file='../dataset/ACP/positive.fasta' --negative_file='../dataset/ACP/negative.fasta' --pre_trained_model_dir='../protst_esm2_protein.pt' --device='cuda:1' --model_file='../model/123_2_0.006_23_0.5.pt'
-/```
+```
 
 ## Predicting
 
 Make a prediction on the therapeutic activity of the samples contained in the input FASTA file. Samples with label 1 are considered to have therapeutic activity, while samples with label 0 are considered to have no therapeutic activity.
 
-/```
+```bash
 python run_predict.py --samples='../ACP/positive.fasta' --pre_trained_model_dir='../protst_esm2_protein.pt' --device='cuda:1' --model_file='../model/123_2_0.006_23_0.5.pt'
-/```
+```
 
 
 ## License
