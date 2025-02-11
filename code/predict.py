@@ -33,7 +33,7 @@ def add_param(model,model_file=None,esm_model_dir='../protst_esm2_protein.pt'):
 
 def predict(input_data,model_file,device,pre_trained_model_dir='../protst_esm2_protein.pt',esm_model_dir='../protst_esm2_protein.pt',batch_size=20,min_layernumber=10):
     print(f'number of samples for predict:{len(input_data)}')
-    input_data = data.DataLoader(test_data,batch_size,shuffle=True)
+    input_data = data.DataLoader(test_data,batch_size,shuffle=False)
     model = Model(min_layernumber=min_layernumber)
     model = add_param(model,model_file=model_file,esm_model_dir=pre_trained_model_dir)
     for name,param in model.named_parameters():
