@@ -61,7 +61,7 @@ model_file = args.model_file
 result_file = args.result_file
 batch_size = args.batch_size
 finetune_layernumber = args.finetune_layernumber
-device = torch.device('device' if torch.cuda.is_available() else "cpu")
+device = torch.device(device if torch.cuda.is_available() else "cpu")
 
 train_data,test_data = train_data,test_data = read_data(positive_file,negative_file)
 result = test(train_data,test_data,model_file=model_file,device=device,pre_trained_model_dir=pre_trained_model_dir,batch_size=batch_size,min_layernumber=min_layernumber,)
