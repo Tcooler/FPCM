@@ -34,55 +34,33 @@ pip install scikit-learn
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+### Training
 
-### Break down into end to end tests
-
-Explain what these tests test and why
+Train the model and save the best parameters. The best result obtained on the validation set during the training process will be output in the result.csv file.
 
 /```
-Give an example
+python run_train.py --positive_file='../dataset/ACP/positive.fasta' --negative_file='../dataset/ACP/negative.fasta' --pre_trained_model_dir='../protst_esm2_protein.pt' --device='cuda:1'
 /```
 
-### And coding style tests
+### Testing
 
-Explain what these tests test and why
+Load the fine-tuned model parameters and test on the input test set. The results will be saved in the test_result.csv file.
 
 /```
-Give an example
+python run_test.py --positive_file='../dataset/ACP/positive.fasta' --negative_file='../dataset/ACP/negative.fasta' --pre_trained_model_dir='../protst_esm2_protein.pt' --device='cuda:1' --model_file='../model/123_2_0.006_23_0.5.pt'
 /```
 
-## Deployment
+## Predicting
 
-Add additional notes about how to deploy this on a live system
+Make a prediction on the therapeutic activity of the samples contained in the input FASTA file. Samples with label 1 are considered to have therapeutic activity, while samples with label 0 are considered to have no therapeutic activity.
 
-## Built With
+/```
+python run_predict.py --samples='../ACP/positive.fasta' --pre_trained_model_dir='../protst_esm2_protein.pt' --device='cuda:1' --model_file='../model/123_2_0.006_23_0.5.pt'
+/```
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
 
