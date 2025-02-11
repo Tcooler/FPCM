@@ -31,7 +31,7 @@ def add_param(model,model_file=None,esm_model_dir='../protst_esm2_protein.pt'):
     return model
 
 
-def predict(input_data,model_file,device,pre_trained_model_dir='../protst_esm2_protein.pt',esm_model_dir='../protst_esm2_protein.pt',batch_size=20,min_layernumber=10):
+def predict(input_data,model_file,device,pre_trained_model_dir='../protst_esm2_protein.pt',batch_size=20,min_layernumber=10):
     print(f'number of samples for predict:{len(input_data)}')
     input_data = data.DataLoader(input_data,batch_size,shuffle=False)
     model = Model(min_layernumber=min_layernumber)
@@ -47,6 +47,6 @@ def predict(input_data,model_file,device,pre_trained_model_dir='../protst_esm2_p
         probability = F.softmax(Y_class_hat,dim=1)
         Y_class_hat_scores.append(probability[:, 1].cpu().detach().numpy())
         Y_class_hats.append(Y_class_hat.argmax(axis=1).cpu().detach().numpy())
-        Y_class_hats = np.concatenate(Y_class_hats,0)
-        Y_class_hat_scores = np.concatenate(Y_class_hat_scores)
+    Y_class_hats = np.concatenate(Y_class_hats,0)
+    Y_class_hat_scores = np.concatenate(Y_class_hat_scores)
     return Y_class_hats,Y_class_hat_scores
