@@ -41,6 +41,7 @@ parser.add_argument('--pre_trained_model_dir',type=str,default='../protst_esm2_p
 parser.add_argument('--model_file',type=str,default='../model/',help='Where the model parameters are saved')
 parser.add_argument('--result_file',type=str,default='../test_result.csv',help="The path of result file, please end with '.csv'")
 parser.add_argument('--batch_size',type=int,default=20,help="Batch size")
+parser.add_argument('--finetune_layernumber',type=int,default=10,help="Number of pre-trained model layers")
 
 
 args = parser.parse_args()
@@ -52,10 +53,11 @@ pre_trained_model_dir = args.pre_trained_model_dir
 model_file = args.model_file
 result_file = args.result_file
 batch_size = args.batch_size
-device = torch.device('device' if torch.cuda.is_available() else "cpu")
+finetune_layernumber = args.finetune_layernumber
+device = torch.device(device if torch.cuda.is_available() else "cpu")
 
 Sequences,input_data = read_data(samples_file)
-flags,scores = predict(input_data,model_file=model_file,device=device,pre_trained_model_dir=pre_trained_model_dir,batch_size=batch_size)
+flags,scores = predict(input_data,model_file=model_file,device=device,pre_trained_model_dir=pre_trained_model_dir,batch_size=batch_size,min_layernumber=min_layernumber)
 data_result = {'sequence':sequences,'flag':flags,'score':scores}
 data_record = pd.DataFrame(data_result)
 if os.path.exists(result_file):
