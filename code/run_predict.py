@@ -22,7 +22,7 @@ def check_for_unstandard_amino_acids(sequence):
     return True
 
 def read_data(input_file):
-    File = open(pos_file,'r')
+    File = open(input_file,'r')
     Sequences = []
     input_data = []
     for line in P_File.readlines():
