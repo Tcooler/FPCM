@@ -8,7 +8,7 @@ def check_fasta_file(file_path):
     if not file_path.endswith(('.fasta', '.fa')):
         raise Exception(f"'{file_path}'is not a fasta file")
 
-def check_for_uncommon_amino_acids(sequence):
+def check_for_unstandard_amino_acids(sequence):
     standard_amino_acids = set('ACDEFGHIKLMNPQRSTVWY')
     for amino_acid in sequence:
         if amino_acid not in standard_amino_acids:
@@ -21,7 +21,7 @@ def read_data(pos_file,neg_file,train_num,test_num,seed):
     for line in P_File.readlines():
         if not line.startswith('>'):
             sequence = line.rstrip()
-            if check_for_uncommon_amino_acid(sequence):
+            if check_for_unstandard_amino_acid(sequence):
                 P_Sequences.append([1,sequence])
     P_File.close()
     random.seed(seed)
@@ -31,7 +31,7 @@ def read_data(pos_file,neg_file,train_num,test_num,seed):
     for line in N_File.readlines():
         if not line.startswith('>'):
             sequence = line.rstrip()
-            if check_for_uncommon_amino_acid(sequence):
+            if check_for_unstandard_amino_acid(sequence):
                 N_Sequences.append([0,sequence])
     N_File.close()
     random.seed(seed)
