@@ -8,7 +8,7 @@ def check_fasta_file(file_path):
     if not file_path.endswith(('.fasta', '.fa')):
         raise Exception(f"'{file_path}'is not a fasta file")
 
-def check_for_unstandard_amino_acids(sequence):
+def check_for_unstandard_amino_acid(sequence):
     standard_amino_acids = set('ACDEFGHIKLMNPQRSTVWY')
     for amino_acid in sequence:
         if amino_acid not in standard_amino_acids:
@@ -41,5 +41,8 @@ def read_data(pos_file,neg_file,train_num,test_num,seed):
     if train_num+test_num > len(N_Sequences):
         raise Exception("The sum train_num and test_num is greater than the number of negative samples. Note that sequences containing non-standard amino acids are excluded.")
     train_data = P_Sequences[:train_num] + N_Sequences[:train_num]
-    test_data = P_Sequences[-1*test_num:] + N_Sequences[-1*test_num:]
+    if test_num != -1:
+        test_data = P_Sequences[-1*test_num:] + N_Sequences[-1*test_num:]
+    else:
+        test_data = P_Sequences[train_num:] + N_Sequences[train_num:]
     return train_data,test_data
