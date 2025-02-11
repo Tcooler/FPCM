@@ -39,7 +39,7 @@ def deal_with_y(labels):
     Y = torch.tensor(Y)
     return Y
 
-def test(test_data,model_file,device,pre_trained_model_dir='../protst_esm2_protein.pt',esm_model_dir='../protst_esm2_protein.pt',batch_size=20,min_layernumber=10):
+def test(test_data,model_file,device,pre_trained_model_dir='../protst_esm2_protein.pt',batch_size=20,min_layernumber=10):
     print(f'number of samples for test:{len(test_data)}')
     test_data = data.DataLoader(test_data,batch_size,shuffle=True)
     model = Model(min_layernumber=min_layernumber)
@@ -50,7 +50,7 @@ def test(test_data,model_file,device,pre_trained_model_dir='../protst_esm2_prote
     Y_classes = []
     Y_class_hats = []
     Y_class_hat_scores = []
-    for labels,X in tes_data:
+    for labels,X in test_data:
         Y_class = deal_with_y(labels).to(device)
         Y_class_hat,_ = model(labels,X,device)
         probability = F.softmax(Y_class_hat,dim=1)
