@@ -30,7 +30,7 @@ pip install torch==2.0.0+cu118 torchvision==0.15.0+cu118 torchaudio==2.0.0
 pip install pandas
 pip install numpy
 pip install scikit-learn
-
+```
 
 ## Running the tests
 
