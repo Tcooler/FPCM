@@ -9,8 +9,7 @@ from protein_model import Model
 from sklearn.metrics import accuracy_score,f1_score, roc_auc_score, confusion_matrix,silhouette_score
 import torch.nn.functional as F
 from Loss import Loss
-from sklearn.cluster import KMeans,AgglomerativeClustering,KMeans
-import scipy.cluster.hierarchy as sch
+from sklearn.cluster import KMeans
 
 
 def setup_seed(seed):
