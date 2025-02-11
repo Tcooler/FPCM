@@ -1,5 +1,5 @@
 import os
-from Test import Test
+from test import Test
 import torch
 import pandas as pd
 import numpy as np
