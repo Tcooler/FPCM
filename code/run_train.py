@@ -1,5 +1,5 @@
 import os
-from Train import Train
+from train import Train
 import torch
 import pandas as pd
 import numpy as np
