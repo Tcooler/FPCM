@@ -50,7 +50,7 @@ def add_param(model,model_dir=None,esm_model_dir='../protst_esm2_protein.pt'):
     return model
 
 
-def Train(train_data,test_data,model_save_dir,device,pre_trained_model_dir='../protst_esm2_protein.pt',loss_k=2,mask_flag=False,seed=10,esm_model_dir='../protst_esm2_protein.pt',batch_size=20,lr=0.006,epoch_num=50,min_layernumber=23,weight_decay=0.0001,alpha=0.5):
+def Train(train_data,test_data,model_save_dir,device,pre_trained_model_dir='../protst_esm2_protein.pt',loss_k=2,mask_flag=False,seed=10,batch_size=20,lr=0.006,epoch_num=50,min_layernumber=10,weight_decay=0.0001,alpha=0.5):
     setup_seed(seed)
     print(len(train_data),len(test_data))
     tra_data = data.DataLoader(train_data,batch_size,shuffle=True)
