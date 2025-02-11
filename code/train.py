@@ -28,7 +28,7 @@ def deal_with_y(labels):
     return Y
 
 
-def add_param(model,model_dir=None,esm_model_dir='/data3/yuanxilu/thrpep_new/model/protst_esm2_protein.pt'):
+def add_param(model,model_dir=None,esm_model_dir='../protst_esm2_protein.pt'):
     #esm_model_dir = '/data3/yuanxilu/thrpep_new/model/esm2_t33_650M_UR50D.pt'
     print(f'Start loading model')
     pretrained_dict = torch.load(esm_model_dir) 
@@ -50,12 +50,12 @@ def add_param(model,model_dir=None,esm_model_dir='/data3/yuanxilu/thrpep_new/mod
     return model
 
 
-def Train(train_data,test_data,model_save_dir,device,loss_k=1,mask_flag=False,seed=10,esm_model_dir='../protst_esm2_protein.pt',batch_size=20,lr=0.006,epoch_num=50,min_layernumber=23,weight_decay=0.0001,alpha=0.5):
+def Train(train_data,test_data,model_save_dir,device,pre_trained_model_dir='../protst_esm2_protein.pt',loss_k=2,mask_flag=False,seed=10,esm_model_dir='../protst_esm2_protein.pt',batch_size=20,lr=0.006,epoch_num=50,min_layernumber=23,weight_decay=0.0001,alpha=0.5):
     setup_seed(seed)
     print(len(train_data),len(test_data))
     tra_data = data.DataLoader(train_data,batch_size,shuffle=True)
     model = Model(min_layernumber=min_layernumber)
-    model = add_param(model,esm_model_dir=esm_model_dir)
+    model = add_param(model,esm_model_dir=pre_trained_model_dir)
     for name,param in model.named_parameters():
         if 'lora' in name:
             param.requires_grad = True
