@@ -15,12 +15,16 @@ FPCM is fine-tuned based on the [ProtST model published by Xu et al.](https://ar
 Additionally, download the ProtST-ESM-2 model parameters by [clicking here](https://protsl.s3.us-east-2.amazonaws.com/checkpoints/protst_esm2.pth). You can name the file protst_esm2_protein.pt and store it in the FPCM folder so that the program can automatically locate the parameter file during subsequent training follow the default without needing to provide the file path. Of course, you can also store it anywhere, but you will need to specify the path when running the file.
 
 ### Installing
-
+```bash
+# clone project
 git clone https://github.com/Tcooler/FPCM.git
 cd SenseXAMP
 
+# create conda virtual environment
 conda create -n FPCM python=3.9 
 conda activate FPCM
+
+# install all requirements
 pip install fair-esm
 pip install torch==2.0.0+cu118 torchvision==0.15.0+cu118 torchaudio==2.0.0
 pip install pandas
