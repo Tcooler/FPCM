@@ -8,21 +8,23 @@ import torch.nn as nn
 from sklearn.cluster import KMeans
 
 
-class Triplet_Loss(nn.Module):
+class FewSOME(nn.Module):
     def __init__(self):
-        super(Triplet_Loss, self).__init__()
+        super(FewSOME, self).__init__()
     def forward(self,sequence_representations_p,sequence_representations_n):
         l_p = len(sequence_representations_p)
         l_n = len(sequence_representations_n)
+        sequence_representations_p = torch.nn.functional.normalize(sequence_representations_p, p=2, dim=1)
+        sequence_representations_n = torch.nn.functional.normalize(sequence_representations_n, p=2, dim=1)
         distance = torch.zeros(l_p,l_p)
         t = random.randint(0,l_n-1)
         for i in range(l_p):
             for j in range(l_p):
-                d_pp = F.pairwise_distance(sequence_representations_p[i],sequence_representations_p[j])/(sequence_representations_p.shape[1]**0.5)
-                d_pn = F.pairwise_distance(sequence_representations_p[i],sequence_representations_n[t])/(sequence_representations_p.shape[1]**0.5)
-                distance[i][j] = max(0,d_pp + 0.05 - d_pn)
+                d_pp = F.pairwise_distance(sequence_representations_p[i],sequence_representations_p[j])
+                d_pn = F.pairwise_distance(sequence_representations_p[i],sequence_representations_n[t])
+                distance[i][j] = max(0,d_pp + 0.2 - d_pn)
         distance = distance.to(sequence_representations_p.device)
-        distance_loss = distance.sum(dim=1)/(l_p-1)
+        distance_loss = distance.sum(dim=1)/((l_p-1)*l_p)
         #distance_loss = 0.5*(distance)**2
         distance_loss = distance_loss.sum()
         return max(0,distance_loss)
@@ -31,7 +33,7 @@ class Loss(nn.Module):
     def __init__(self,k,alpha=2):
         super(Loss, self).__init__()
         self.k = k
-        self.triplet_loss = Triplet_Loss()
+        self.fewsome = FewSOME()
         self.class_loss_f = nn.CrossEntropyLoss(reduction='mean')
         self.alpha = alpha
     def forward(self,sequence_representaitions,y_hat,y):
@@ -53,6 +55,7 @@ class Loss(nn.Module):
             samples_n = sequence_representaitions[num_list_n]
             if len(num_list_p) <= 1 or len(num_list_n) <= 0:
                 continue
-            distance_loss += self.triplet_loss(samples_p,samples_n)
-        loss = self.alpha*class_loss + (1-self.alpha)*distance_loss
+            distance_loss += self.fewsome(samples_p,samples_n)
+        print(class_loss,distance_loss)
+        loss = class_loss + self.alpha*distance_loss
         return loss
